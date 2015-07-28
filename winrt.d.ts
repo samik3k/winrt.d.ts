@@ -1,9 +1,4 @@
-// Type definitions for WinRT
-// Project: http://msdn.microsoft.com/en-us/library/windows/apps/br211377.aspx
-// Definitions by: TypeScript samples <https://www.typescriptlang.org/>
-// Definitions: https://github.com/borisyankov/DefinitelyTyped
-
-/* *****************************************************************************
+ /* *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved. 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License. You may obtain a copy of the
@@ -34,17 +29,6 @@ declare module Windows {
             export interface IPropertySet extends Windows.Foundation.Collections.IObservableMap<string, any>, Windows.Foundation.Collections.IMap<string, any>, Windows.Foundation.Collections.IIterable<Windows.Foundation.Collections.IKeyValuePair<string, any>> {
             }
             export class PropertySet implements Windows.Foundation.Collections.IPropertySet, Windows.Foundation.Collections.IObservableMap<string, any>, Windows.Foundation.Collections.IMap<string, any>, Windows.Foundation.Collections.IIterable<Windows.Foundation.Collections.IKeyValuePair<string, any>> {
-                size: number;
-                onmapchanged: any/* TODO */;
-                lookup(key: string): any;
-                hasKey(key: string): boolean;
-                getView(): Windows.Foundation.Collections.IMapView<string, any>;
-                insert(key: string, value: any): boolean;
-                remove(key: string): void;
-                clear(): void;
-                first(): Windows.Foundation.Collections.IIterator<Windows.Foundation.Collections.IKeyValuePair<string, any>>;
-            }
-            export class ValueSet implements Windows.Foundation.Collections.IPropertySet, Windows.Foundation.Collections.IObservableMap<string, any>, Windows.Foundation.Collections.IMap<string, any>, Windows.Foundation.Collections.IIterable<Windows.Foundation.Collections.IKeyValuePair<string, any>> {
                 size: number;
                 onmapchanged: any/* TODO */;
                 lookup(key: string): any;
@@ -512,14 +496,6 @@ declare module Windows {
             close(): void;
         }
         export interface IAsyncAction extends Windows.Foundation.IAsyncInfo {
-            then<U>(success?: () => IPromise<U>, error?: (error: any) => IPromise<U>, progress?: (progress: any) => void): IPromise<U>;
-            then<U>(success?: () => IPromise<U>, error?: (error: any) => U, progress?: (progress: any) => void): IPromise<U>;
-            then<U>(success?: () => U, error?: (error: any) => IPromise<U>, progress?: (progress: any) => void): IPromise<U>;
-            then<U>(success?: () => U, error?: (error: any) => U, progress?: (progress: any) => void): IPromise<U>;
-            done? <U>(success?: () => any, error?: (error: any) => any, progress?: (progress: any) => void): void;
-
-            cancel(): void;
-
             completed: Windows.Foundation.AsyncActionCompletedHandler;
             getResults(): void;
         }
@@ -545,7 +521,7 @@ declare module Windows {
         export interface AsyncActionWithProgressCompletedHandler<TProgress> {
             (asyncInfo: Windows.Foundation.IAsyncActionWithProgress<TProgress>, asyncStatus: Windows.Foundation.AsyncStatus): void;
         }
-        export interface IAsyncActionWithProgress<TProgress> extends Windows.Foundation.IAsyncInfo, Windows.Foundation.IPromise<void> {
+        export interface IAsyncActionWithProgress<TProgress> extends Windows.Foundation.IAsyncInfo {
             progress: Windows.Foundation.AsyncActionProgressHandler<TProgress>;
             completed: Windows.Foundation.AsyncActionWithProgressCompletedHandler<TProgress>;
             getResults(): void;
@@ -1784,31 +1760,16 @@ declare module Windows {
         }
         export interface IPackage {
             dependencies: Windows.Foundation.Collections.IVectorView<Windows.ApplicationModel.Package>;
-			description: string;
-			displayName: string;
             id: Windows.ApplicationModel.PackageId;
             installedLocation: Windows.Storage.StorageFolder;
-			isBundle: boolean;
-			isDevelopmentMode: boolean;
             isFramework: boolean;
-			isResourcePackage: boolean;
-			logo: Windows.Foundation.Uri;
-			publisherDisplayName: string;
         }
         export class Package implements Windows.ApplicationModel.IPackage {
-			static current: Windows.ApplicationModel.Package;
-
             dependencies: Windows.Foundation.Collections.IVectorView<Windows.ApplicationModel.Package>;
-			description: string;
-			displayName: string;
             id: Windows.ApplicationModel.PackageId;
             installedLocation: Windows.Storage.StorageFolder;
-			isBundle: boolean;
-			isDevelopmentMode: boolean;
             isFramework: boolean;
-			isResourcePackage: boolean;
-			logo: Windows.Foundation.Uri;
-			publisherDisplayName: string;
+            static current: Windows.ApplicationModel.Package;
         }
         export interface IPackageStatics {
             current: Windows.ApplicationModel.Package;
@@ -2269,6 +2230,52 @@ declare module Windows {
             }
         }
     }
+}
+declare module Windows {
+	export module Data {
+		export module PDF {
+			export enum PdfPageRotation {
+				normal,
+				rotate90,
+				rotate180,
+				rotate270
+			}
+			export class PdfDocument {
+				getPage(index: number): Windows.Data.PDF.PdfPage;
+				loadFromFileAsync(file: Windows.Storage.IStorageFile): Windows.Foundation.IAsyncOperation<Windows.Data.PDF.PdfDocument>;
+				loadFromFileAsync(file: Windows.Storage.IStorageFile, str: string): Windows.Foundation.IAsyncOperation<Windows.Data.PDF.PdfDocument>;
+				loadFromStreamAsync(stream: Windows.Storage.Streams.IRandomAccessStream): Windows.Foundation.IAsyncOperation<Windows.Data.PDF.PdfDocument>;
+				loadFromStreamAsync(stream: Windows.Storage.Streams.IRandomAccessStream, str: string): Windows.Foundation.IAsyncOperation<Windows.Data.PDF.PdfDocument>;
+			}
+			export class PdfPage {
+				close(): void;
+				preparePageAsync(): Windows.Foundation.IAsyncAction;
+				renderToStreamAsync(stream: Windows.Storage.Streams.IRandomAccessStream);
+				renderToStreamAsync(stream: Windows.Storage.Streams.IRandomAccessStream, options: Windows.Data.PDF.PdfPageRenderOptions);
+				dimensions: Windows.Data.PDF.PdfPageDimensions;
+				index: number;
+				preferredZoom: number;
+				rotation: Windows.Data.PDF.PdfPageRotation;
+				size: Windows.Foundation.Size;
+			}
+			export class PdfPageDimensions {
+				ArtBox: Windows.Foundation.Rect;
+				BleedBox: Windows.Foundation.Rect;
+				CropBox: Windows.Foundation.Rect;
+				MediaBox: Windows.Foundation.Rect;
+				TrimBox: Windows.Foundation.Rect;
+			}
+			export class PdfPageRenderOptions {
+				constructor();
+				backgroundColor: Windows.UI.Color;
+				bitmapEncoderId: string;
+				destinationHeight: number;
+				destinationWidth: number;
+				isIgnoringHighContrast: boolean;
+				sourceRect: Windows.Foundation.Rect;
+			}
+		}
+	}
 }
 declare module Windows {
     export module Data {
@@ -3292,7 +3299,7 @@ declare module Windows {
                 done<U>(success?: (value: Windows.Foundation.Collections.IVectorView<Windows.Devices.Sms.ISmsMessage>) => any, error?: (error: any) => any, progress?: (progress: any) => void ): void;
                 operation: {
                     progress: Windows.Foundation.AsyncOperationProgressHandler<Windows.Foundation.Collections.IVectorView<Windows.Devices.Sms.ISmsMessage>, number>;
-                    completed: Windows.Foundation.AsyncOperationCompletedHandler<Windows.Foundation.Collections.IVectorView<Windows.Devices.Sms.ISmsMessage>>;
+                    completed: Windows.Foundation.AsyncOperationWithProgressCompletedHandler<Windows.Foundation.Collections.IVectorView<Windows.Devices.Sms.ISmsMessage>, number>;
                     getResults(): Windows.Foundation.Collections.IVectorView<Windows.Devices.Sms.ISmsMessage>;
                 }
             }
@@ -3340,11 +3347,11 @@ declare module Windows {
                 getResults(): void;
                 cancel(): void;
                 close(): void;
-                then<U>(success?: () => Windows.Foundation.IPromise<U>, error?: (error: any) => Windows.Foundation.IPromise<U>, progress?: (progress: any) => void): Windows.Foundation.IPromise<U>;
-                then<U>(success?: () => Windows.Foundation.IPromise<U>, error?: (error: any) => U, progress?: (progress: any) => void): Windows.Foundation.IPromise<U>;
-                then<U>(success?: () => U, error?: (error: any) => Windows.Foundation.IPromise<U>, progress?: (progress: any) => void): Windows.Foundation.IPromise<U>;
-                then<U>(success?: () => U, error?: (error: any) => U, progress?: (progress: any) => void): Windows.Foundation.IPromise<U>;
-                done<U>(success?: () => any, error?: (error: any) => any, progress?: (progress: any) => void): void ;
+                then<U>(success: (value: any) => U, error?: (error: any) => U, progress?: (progress: any) => void ): Windows.Foundation.IPromise<U>;
+                then<U>(success: (value: any) => Windows.Foundation.IPromise<U>, error?: (error: any) => U, progress?: (progress: any) => void ): Windows.Foundation.IPromise<U>;
+                then<U>(success: (value: any) => U, error?: (error: any) => Windows.Foundation.IPromise<U>, progress?: (progress: any) => void ): Windows.Foundation.IPromise<U>;
+                then<U>(success: (value: any) => Windows.Foundation.IPromise<U>, error?: (error: any) => Windows.Foundation.IPromise<U>, progress?: (progress: any) => void ): Windows.Foundation.IPromise<U>;
+                done<U>(success: (value: any) => any, error?: (error: any) => any, progress?: (progress: any) => void ): void;
                 operation: {
                     completed: Windows.Foundation.AsyncOperationCompletedHandler<any>;
                     getResults(): any;
@@ -7951,8 +7958,6 @@ declare module Windows {
                 control: Windows.Networking.Sockets.MessageWebSocketControl;
                 information: Windows.Networking.Sockets.MessageWebSocketInformation;
                 onmessagereceived: any/* TODO */;
-                close(): void;
-                close(code: number, reason: string): void;
             }
             export class MessageWebSocketControl implements Windows.Networking.Sockets.IMessageWebSocketControl, Windows.Networking.Sockets.IWebSocketControl {
                 maxMessageSize: number;
@@ -7991,8 +7996,6 @@ declare module Windows {
                 control: Windows.Networking.Sockets.StreamWebSocketControl;
                 information: Windows.Networking.Sockets.StreamWebSocketInformation;
                 inputStream: Windows.Storage.Streams.IInputStream;
-                close(): void;
-                close(code: number, reason: string): void;
             }
             export class StreamWebSocketControl implements Windows.Networking.Sockets.IStreamWebSocketControl, Windows.Networking.Sockets.IWebSocketControl {
                 noDelay: boolean;
@@ -8428,11 +8431,11 @@ declare module Windows {
                     getResults(): void;
                     cancel(): void;
                     close(): void;
-                    then<U>(success?: () => Windows.Foundation.IPromise<U>, error?: (error: any) => Windows.Foundation.IPromise<U>, progress?: (progress: any) => void): Windows.Foundation.IPromise<U>;
-                    then<U>(success?: () => Windows.Foundation.IPromise<U>, error?: (error: any) => U, progress?: (progress: any) => void): Windows.Foundation.IPromise<U>;
-                    then<U>(success?: () => U, error?: (error: any) => Windows.Foundation.IPromise<U>, progress?: (progress: any) => void): Windows.Foundation.IPromise<U>;
-                    then<U>(success?: () => U, error?: (error: any) => U, progress?: (progress: any) => void): Windows.Foundation.IPromise<U>;
-                    done<U>(success?: () => any, error?: (error: any) => any, progress?: (progress: any) => void): void;
+                    then<U>(success: (value: any) => U, error?: (error: any) => U, progress?: (progress: any) => void ): Windows.Foundation.IPromise<U>;
+                    then<U>(success: (value: any) => Windows.Foundation.IPromise<U>, error?: (error: any) => U, progress?: (progress: any) => void ): Windows.Foundation.IPromise<U>;
+                    then<U>(success: (value: any) => U, error?: (error: any) => Windows.Foundation.IPromise<U>, progress?: (progress: any) => void ): Windows.Foundation.IPromise<U>;
+                    then<U>(success: (value: any) => Windows.Foundation.IPromise<U>, error?: (error: any) => Windows.Foundation.IPromise<U>, progress?: (progress: any) => void ): Windows.Foundation.IPromise<U>;
+                    done<U>(success: (value: any) => any, error?: (error: any) => any, progress?: (progress: any) => void ): void;
                     operation: {
                         completed: Windows.Foundation.AsyncOperationCompletedHandler<any>;
                         getResults(): any;
@@ -9279,8 +9282,7 @@ declare module Windows {
                 unconsumedBufferLength: number;
                 unicodeEncoding: Windows.Storage.Streams.UnicodeEncoding;
                 readByte(): number;
-                readBytes(value: number[]): void;
-                readBytes(value: Uint8Array): void;
+                readBytes(): Uint8Array;
                 readBuffer(length: number): Windows.Storage.Streams.IBuffer;
                 readBoolean(): boolean;
                 readGuid(): string;
@@ -9309,8 +9311,7 @@ declare module Windows {
                 unconsumedBufferLength: number;
                 unicodeEncoding: Windows.Storage.Streams.UnicodeEncoding;
                 readByte(): number;
-                readBytes(value: number[]): void;
-                readBytes(value: Uint8Array): void;
+                readBytes(): Uint8Array;
                 readBuffer(length: number): Windows.Storage.Streams.IBuffer;
                 readBoolean(): boolean;
                 readGuid(): string;
@@ -9358,7 +9359,6 @@ declare module Windows {
                 unicodeEncoding: Windows.Storage.Streams.UnicodeEncoding;
                 unstoredBufferLength: number;
                 writeByte(value: number): void;
-                writeBytes(value: number[]): void;
                 writeBytes(value: Uint8Array): void;
                 writeBuffer(buffer: Windows.Storage.Streams.IBuffer): void;
                 writeBuffer(buffer: Windows.Storage.Streams.IBuffer, start: number, count: number): void;
@@ -9391,7 +9391,6 @@ declare module Windows {
                 unicodeEncoding: Windows.Storage.Streams.UnicodeEncoding;
                 unstoredBufferLength: number;
                 writeByte(value: number): void;
-                writeBytes(value: number[]): void;
                 writeBytes(value: Uint8Array): void;
                 writeBuffer(buffer: Windows.Storage.Streams.IBuffer): void;
                 writeBuffer(buffer: Windows.Storage.Streams.IBuffer, start: number, count: number): void;
@@ -10186,7 +10185,6 @@ declare module Windows {
             getFilesAsync(): Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<Windows.Storage.StorageFile>>;
             getFoldersAsync(): Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<Windows.Storage.StorageFolder>>;
             getItemsAsync(): Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<Windows.Storage.IStorageItem>>;
-            getItemsAsync(startIndex: number, maxItemsToRetrieve: number): Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<Windows.Storage.IStorageItem>>;
         }
         export interface IStorageFile extends Windows.Storage.IStorageItem, Windows.Storage.Streams.IRandomAccessStreamReference, Windows.Storage.Streams.IInputStreamReference {
             contentType: string;
@@ -10990,36 +10988,29 @@ declare module Windows {
             }
             export interface IFileOpenPicker {
                 commitButtonText: string;
-                continuationData: Windows.Foundation.Collections.ValueSet;
                 fileTypeFilter: Windows.Foundation.Collections.IVector<string>;
                 settingsIdentifier: string;
                 suggestedStartLocation: Windows.Storage.Pickers.PickerLocationId;
                 viewMode: Windows.Storage.Pickers.PickerViewMode;
-                pickMultipleFilesAndContinue(): void;
-                pickMultipleFilesAsync(): Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<Windows.Storage.StorageFile>>;
-                pickSingleFileAndContinue(): void;
                 pickSingleFileAsync(): Windows.Foundation.IAsyncOperation<Windows.Storage.StorageFile>;
+                pickMultipleFilesAsync(): Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<Windows.Storage.StorageFile>>;
             }
             export interface IFileSavePicker {
                 commitButtonText: string;
-                continuationData: Windows.Foundation.Collections.ValueSet;
                 defaultFileExtension: string;
                 fileTypeChoices: Windows.Foundation.Collections.IMap<string, Windows.Foundation.Collections.IVector<string>>;
                 settingsIdentifier: string;
                 suggestedFileName: string;
                 suggestedSaveFile: Windows.Storage.StorageFile;
                 suggestedStartLocation: Windows.Storage.Pickers.PickerLocationId;
-                pickSaveFileAndContinue(): void;
                 pickSaveFileAsync(): Windows.Foundation.IAsyncOperation<Windows.Storage.StorageFile>;
             }
             export interface IFolderPicker {
                 commitButtonText: string;
-                continuationData: Windows.Foundation.Collections.ValueSet;
                 fileTypeFilter: Windows.Foundation.Collections.IVector<string>;
                 settingsIdentifier: string;
                 suggestedStartLocation: Windows.Storage.Pickers.PickerLocationId;
                 viewMode: Windows.Storage.Pickers.PickerViewMode;
-                pickFolderAndContinue(): void;
                 pickSingleFolderAsync(): Windows.Foundation.IAsyncOperation<Windows.Storage.StorageFolder>;
             }
             export class FileOpenPicker implements Windows.Storage.Pickers.IFileOpenPicker {
@@ -11028,10 +11019,7 @@ declare module Windows {
                 settingsIdentifier: string;
                 suggestedStartLocation: Windows.Storage.Pickers.PickerLocationId;
                 viewMode: Windows.Storage.Pickers.PickerViewMode;
-                continuationData: Windows.Foundation.Collections.ValueSet;
-                pickSingleFileAndContinue(): void;
                 pickSingleFileAsync(): Windows.Foundation.IAsyncOperation<Windows.Storage.StorageFile>;
-                pickMultipleFilesAndContinue(): void;
                 pickMultipleFilesAsync(): Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<Windows.Storage.StorageFile>>;
             }
             export class FileSavePicker implements Windows.Storage.Pickers.IFileSavePicker {
@@ -11042,8 +11030,6 @@ declare module Windows {
                 suggestedFileName: string;
                 suggestedSaveFile: Windows.Storage.StorageFile;
                 suggestedStartLocation: Windows.Storage.Pickers.PickerLocationId;
-                continuationData: Windows.Foundation.Collections.ValueSet;
-                pickSaveFileAndContinue(): void;
                 pickSaveFileAsync(): Windows.Foundation.IAsyncOperation<Windows.Storage.StorageFile>;
             }
             export class FolderPicker implements Windows.Storage.Pickers.IFolderPicker {
@@ -11052,8 +11038,6 @@ declare module Windows {
                 settingsIdentifier: string;
                 suggestedStartLocation: Windows.Storage.Pickers.PickerLocationId;
                 viewMode: Windows.Storage.Pickers.PickerViewMode;
-                continuationData: Windows.Foundation.Collections.ValueSet;
-                pickFolderAndContinue(): void;
                 pickSingleFolderAsync(): Windows.Foundation.IAsyncOperation<Windows.Storage.StorageFolder>;
             }
         }
@@ -11573,78 +11557,13 @@ declare module Windows {
                 snapped,
                 fullScreenPortrait,
             }
-
-			/**
-			 * Defines an instance of a window (app view) and the information that describes it.
-			**/
+            export interface IApplicationViewStatics {
+                value: Windows.UI.ViewManagement.ApplicationViewState;
+                tryUnsnap(): boolean;
+            }
             export class ApplicationView {
-				/**
-				 * Gets the window (app view) for the current app.
-				**/
-				static getForCurrentView(): ApplicationView;
-				
-				/**
-				 * Attempts to unsnap a previously snapped app. This call will only succeed when the app is running in the foreground.
-				**/
-				static tryUnsnap(): boolean;
-				
-				/**
-				 * Gets the state of the current app view.
-				**/
                 static value: Windows.UI.ViewManagement.ApplicationViewState;
-
-				/**
-				 * Indicates whether the app terminates when the last window is closed.
-				**/
-				static terminateAppOnFinalViewClose: boolean;
-
-				/**
-				 * Gets the current orientation of the window (app view) with respect to the display.
-				**/
-				orientation: ApplicationViewOrientation;
-
-				/**
-				 * Gets or sets the displayed title of the window.
-				**/
-				title: string;
-
-				/**
-				 * Gets or sets whether screen capture is enabled for the window (app view).
-				**/
-				isScreenCaptureEnabled: boolean;
-
-				/**
-				 * Gets whether the window (app view) is on the Windows lock screen.
-				**/
-				isOnLockScreen: boolean;
-
-				/**
-				 * Gets whether the window(app view) is full screen or not.
-				**/
-				isFullScreen: boolean;
-
-				/**
-				 * Gets the current ID of the window (app view) .
-				**/
-				id: number;
-
-				/**
-				 * Gets whether the current window (app view) is adjacent to the right edge of the screen.
-				**/
-				adjacentToRightDisplayEdge: boolean;
-
-				/**
-				 * Gets whether the current window (app view) is adjacent to the left edge of the screen.
-				**/
-				adjacentToLeftDisplayEdge: number;
-			}
-
-			/**
-			 * Defines the set of display orientation modes for a window (app view).
-			**/
-			export enum ApplicationViewOrientation {
-				landscape,
-				portrait
+                static tryUnsnap(): boolean;
             }
             export interface IInputPaneVisibilityEventArgs {
                 ensuredFocusedElementInView: boolean;
@@ -12232,8 +12151,8 @@ declare module Windows {
                 createWithId(tileId: string): Windows.UI.StartScreen.SecondaryTile;
             }
             export class SecondaryTile implements Windows.UI.StartScreen.ISecondaryTile {
-                constructor(tileId: string, shortName: string, displayName: string, args: string, tileOptions: Windows.UI.StartScreen.TileOptions, logoReference: Windows.Foundation.Uri);
-                constructor(tileId: string, shortName: string, displayName: string, args: string, tileOptions: Windows.UI.StartScreen.TileOptions, logoReference: Windows.Foundation.Uri, wideLogoReference: Windows.Foundation.Uri);
+                constructor(tileId: string, shortName: string, displayName: string, arguments: string, tileOptions: Windows.UI.StartScreen.TileOptions, logoReference: Windows.Foundation.Uri);
+                constructor(tileId: string, shortName: string, displayName: string, arguments: string, tileOptions: Windows.UI.StartScreen.TileOptions, logoReference: Windows.Foundation.Uri, wideLogoReference: Windows.Foundation.Uri);
                 constructor(tileId: string);
                 constructor();
                 arguments: string;
@@ -14762,17 +14681,10 @@ declare module Windows {
 }
 declare module Windows.Foundation {
     export interface IPromise<T> {
-        then<U>(success?: (value: T) => IPromise<U>, error?: (error: any) => IPromise<U>, progress?: (progress: any) => void ): IPromise<U>;
-        then<U>(success?: (value: T) => IPromise<U>, error?: (error: any) => U, progress?: (progress: any) => void ): IPromise<U>;
-        then<U>(success?: (value: T) => U, error?: (error: any) => IPromise<U>, progress?: (progress: any) => void ): IPromise<U>;
-        then<U>(success?: (value: T) => U, error?: (error: any) => U, progress?: (progress: any) => void ): IPromise<U>;
-        done<U>(success?: (value: T) => any, error?: (error: any) => any, progress?: (progress: any) => void): void;
-
-        cancel(): void;
-
-        onerror?(eventInfo: CustomEvent): void;
-        addEventListener?(type: string, listener: Function, capture?: boolean): void;
-        dispatchEvent?(type: string, details: any): boolean;
-        removeEventListener?(eventType: string, listener: Function, capture?: boolean): void;
+        then<U>(success?: (value: T) => IPromise<U>, error?: (error: any) => IPromise<U>, progress?: (progress: any) => void ): Windows.Foundation.IPromise<U>;
+        then<U>(success?: (value: T) => IPromise<U>, error?: (error: any) => U, progress?: (progress: any) => void ): Windows.Foundation.IPromise<U>;
+        then<U>(success?: (value: T) => U, error?: (error: any) => IPromise<U>, progress?: (progress: any) => void ): Windows.Foundation.IPromise<U>;
+        then<U>(success?: (value: T) => U, error?: (error: any) => U, progress?: (progress: any) => void ): Windows.Foundation.IPromise<U>;
+        done?<U>(success?: (value: T) => any, error?: (error: any) => any, progress?: (progress: any) => void ): void;
     }
 }
